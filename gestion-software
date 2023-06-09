@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+############################################
+#
+# NOMBRE: gestion.sh
+# AUTOR: Samuel Eloy González Díaz y Laura Alayón Domínguez
+# OBJETIVO: Realizar varias acciones de gestión de software
+#
+# ARGUMENTOS: total=1. Nombre del paquete.
+# SALIDAS: Consulta requerida
+#
+# FECHA: 02/03/2023
+# VERSIONES: 1.0 (Código inicial)
+#
+############################################
+package=$1
+
+until [ ! -z $package ]; do
+    read -p "Debe añadir un paquete como argumento: " package
+done
+
+sudo apt update
+                                                                                                                                                                                                                                                                               
+if dpkg -s $package >/dev/null 2>&1                                                                                                                                                                                                                                            
+    then                                                                                                                                                                                                                                                                       
+    echo ''                                                                                                                                                                                                                                                                    
+    echo "El paquete $package se encuentra en el sistema."                                                                                                                                                                                                                     
+    echo "¿Qué te gustaría hacer con él?"                                                                                                                                                                                                                                      
+    echo ''                                                                                                                                                                                                                                                                    
+    echo '**************'                                                                                                                                                                                                                                                      
+    echo '**** MENU ****'                                                                                                                                                                                                                                                      
+    echo '**************'                                                                                                                                                                                                                                                      
+    select option in "Mostrar su versión" "Reinstalar" "Actualizar" "Eliminar (guardando la configuración)" "Eliminar totalmente"; do                                                                                                                                          
+        case $option in                                                                                                                                                                                                                                                        
+            "Mostrar su versión")                                                                                                                                                                                                                                              
+                dpkg -s $package | grep Version                                                                                                                                                                                                                                
+                break                                                                                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+            "Reinstalar")                                                                                                                                                                                                                                                      
+                sudo apt-get reinstall $package                                                                                                                                                                                                                                
+                break                                                                                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+            "Actualizar")                                                                                                                                                                                                                                                      
+                if apt-cache policy $package | grep "Candidate:" >/dev/null 2>&1                                                                                                                                                                                               
+                then                                                                                                                                                                                                                                                           
+                sudo apt-get install --only-upgrade $package                                                                                                                                                                                                                   
+                else                                                                                                                                                                                                                                                           
+                echo "No hay actualizaciones disponibles para el paquete $package"                                                                                                                                                                                             
+                fi                                                                                                                                                                                                                                                             
+                break                                                                                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+            "Eliminar (guardando la configuración)")                                                                                                                                                                                                                           
+                sudo apt-get remove $package                                                                                                                                                                                                                                   
+                break                                                                                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+            "Eliminar totalmente")                                                                                                                                                                                                                                             
+                sudo apt-get purge $package                                                                                                                                                                                                                                    
+                break                                                                                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+            *)                                                                                                                                                                                                                                                                 
+                echo "ERROR. Por favor, selecciona una opción entre las disponibles."                                                                                                                                                                                          
+                ;;                                                                                                                                                                                                                                                             
+        esac                                                                                                                                                                                                                                                                   
+    done                                                                                                                                                                                                                                                                       
+Descargas/gestion(1).sh                        
